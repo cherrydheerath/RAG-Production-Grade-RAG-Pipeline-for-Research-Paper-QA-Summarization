@@ -1,0 +1,3 @@
+"""
+ScholarRAG backend package.
+"""
