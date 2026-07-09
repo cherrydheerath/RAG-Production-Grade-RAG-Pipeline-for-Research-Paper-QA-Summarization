@@ -50,12 +50,16 @@ class QdrantVectorStore:
         self.embedding_dim = embedding_dim
 
         try:
-            self._client = QdrantClient(
-                url=self.url,
-                api_key=self.api_key,
-                timeout=30,
-            )
-            logger.info("Connected to Qdrant at %s", self.url)
+            if not self.url or not self.url.startswith("http"):
+                logger.info("Initializing local disk-based Qdrant client in 'data/qdrant'")
+                self._client = QdrantClient(path="data/qdrant")
+            else:
+                self._client = QdrantClient(
+                    url=self.url,
+                    api_key=self.api_key,
+                    timeout=30,
+                )
+                logger.info("Connected to Qdrant at %s", self.url)
         except Exception as exc:
             raise VectorStoreError(f"Cannot connect to Qdrant: {exc}") from exc
 
